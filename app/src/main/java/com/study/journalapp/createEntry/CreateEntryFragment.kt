@@ -5,12 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.study.journalapp.data.EntryDatabase
 import com.study.journalapp.data.EntryRepository
 import com.study.journalapp.databinding.FragmentCreateEntryBinding
+import kotlinx.coroutines.launch
 
 class CreateEntryFragment : Fragment() {
     private var _binding: FragmentCreateEntryBinding? = null
@@ -22,11 +27,39 @@ class CreateEntryFragment : Fragment() {
     ): View? {
         _binding = FragmentCreateEntryBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        val entryId = CreateEntryFragmentArgs.fromBundle(requireArguments()).entryId
+
         val application = requireNotNull(this.activity).application
         val dao = EntryDatabase.getInstance(application).entryDao
         val repository = EntryRepository(dao)
-        val viewModelFactory = CreateEntryViewModelFactory(repository)
+        val viewModelFactory = CreateEntryViewModelFactory(entryId, repository)
         val viewModel = ViewModelProvider(this, viewModelFactory).get(CreateEntryViewModel::class.java)
+
+        if (viewModel.isEditMode) {
+            (requireActivity() as AppCompatActivity).supportActionBar?.title = "Edit entry"
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.title.collect { title ->
+                        if (binding.createTitle.text.toString() != title) {
+                            binding.createTitle.setText(title)
+                            binding.createTitle.setSelection(title.length)
+                        }
+                    }
+                }
+                launch {
+                    viewModel.content.collect { content ->
+                        if (binding.createContent.text.toString() != content) {
+                            binding.createContent.setText(content)
+                            binding.createContent.setSelection(content.length)
+                        }
+                    }
+                }
+            }
+        }
 
         binding.createTitle.doOnTextChanged { text, _, _, _ ->
             viewModel.onTitleChanged(text.toString())
@@ -36,7 +69,7 @@ class CreateEntryFragment : Fragment() {
         }
 
         binding.createButton.setOnClickListener {
-            viewModel.createEntry()
+            viewModel.saveEntry()
             findNavController().popBackStack()
         }
 

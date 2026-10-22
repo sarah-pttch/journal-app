@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.study.journalapp.data.EntryRepository
 
-class CreateEntryViewModelFactory(private val repository: EntryRepository)
+class CreateEntryViewModelFactory(private val entryId: Long, private val repository: EntryRepository)
     : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CreateEntryViewModel::class.java)) {
-            return CreateEntryViewModel(repository) as T
+            return CreateEntryViewModel(entryId, repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel")
     }

@@ -47,7 +47,12 @@
         android:id="@+id/createEntryFragment"
         android:name="com.study.journalapp.createEntry.CreateEntryFragment"
         android:label="Create a new entry"
-        tools:layout="@layout/fragment_create_entry" />
+        tools:layout="@layout/fragment_create_entry" >
+        <argument
+            android:name="entryId"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
     <fragment
         android:id="@+id/viewEntryFragment"
         android:name="com.study.journalapp.viewEntry.ViewEntryFragment"
@@ -56,6 +61,9 @@
         <argument
             android:name="entryId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_viewEntryFragment_to_createEntryFragment"
+            app:destination="@id/createEntryFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_createEntryFragment"

@@ -6,14 +6,30 @@ import com.study.journalapp.data.Entry
 import com.study.journalapp.data.EntryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class CreateEntryViewModel(val repository: EntryRepository) : ViewModel() {
+class CreateEntryViewModel(entryId: Long, val repository: EntryRepository) : ViewModel() {
     private val _title = MutableStateFlow("")
     val title = _title.asStateFlow()
 
     private val _content = MutableStateFlow("")
     val content = _content.asStateFlow()
+
+    val isEditMode = entryId != 0L
+    private var existingEntry: Entry? = null
+
+    init {
+        if (isEditMode) {
+            viewModelScope.launch {
+                repository.getById(entryId).first()?.let { entry ->
+                    existingEntry = entry
+                    _title.value = entry.title
+                    _content.value = entry.content
+                }
+            }
+        }
+    }
 
     fun onTitleChanged(newTitle: String) {
         _title.value = newTitle
@@ -23,10 +39,17 @@ class CreateEntryViewModel(val repository: EntryRepository) : ViewModel() {
         _content.value = newContent
     }
 
-    fun createEntry() {
+    fun saveEntry() {
         viewModelScope.launch {
-            val entry = Entry(title = _title.value, content = _content.value)
-            repository.createEntry(entry)
+            val existing = existingEntry
+            when {
+                existing != null -> repository.update(
+                    existing.copy(title = _title.value, content = _content.value)
+                )
+                !isEditMode -> repository.createEntry(
+                    Entry(title = _title.value, content = _content.value)
+                )
+            }
         }
     }
 }

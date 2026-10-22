@@ -24,7 +24,7 @@ interface EntryDao {
     fun getAll(): Flow<List<Entry>>
 
     @Query("SELECT * FROM entries WHERE entryId = :entryId")
-    fun get(entryId: Long): Flow<Entry>
+    fun get(entryId: Long): Flow<Entry?>
 
     @Query("SELECT * FROM entries WHERE creation_date BETWEEN :start AND :end")
     fun getByDate(start: Date, end: Date): Flow<List<Entry>>

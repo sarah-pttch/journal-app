@@ -12,11 +12,19 @@ class EntryRepository(
         dao.insert(entry)
     }
 
+    suspend fun update(entry: Entry) {
+        dao.update(entry)
+    }
+
+    suspend fun delete(entry: Entry) {
+        dao.delete(entry)
+    }
+
     fun getAll(): Flow<List<Entry>> {
         return dao.getAll()
     }
 
-    fun getById(entryId: Long): Flow<Entry> {
+    fun getById(entryId: Long): Flow<Entry?> {
         return dao.get(entryId)
     }
 

@@ -16,6 +16,9 @@ class CreateEntryViewModel(entryId: Long, val repository: EntryRepository) : Vie
     private val _content = MutableStateFlow("")
     val content = _content.asStateFlow()
 
+    private val _imagePaths = MutableStateFlow<List<String>>(emptyList())
+    val imagePaths = _imagePaths.asStateFlow()
+
     val isEditMode = entryId != 0L
     private var existingEntry: Entry? = null
 
@@ -26,6 +29,7 @@ class CreateEntryViewModel(entryId: Long, val repository: EntryRepository) : Vie
                     existingEntry = entry
                     _title.value = entry.title
                     _content.value = entry.content
+                    _imagePaths.value = entry.imagePaths
                 }
             }
         }
@@ -39,15 +43,23 @@ class CreateEntryViewModel(entryId: Long, val repository: EntryRepository) : Vie
         _content.value = newContent
     }
 
+    fun addImages(paths: List<String>) {
+        _imagePaths.value += paths
+    }
+
+    fun removeImage(path: String) {
+        _imagePaths.value -= path
+    }
+
     fun saveEntry() {
         viewModelScope.launch {
             val existing = existingEntry
             when {
                 existing != null -> repository.update(
-                    existing.copy(title = _title.value, content = _content.value)
+                    existing.copy(title = _title.value, content = _content.value, imagePaths = _imagePaths.value)
                 )
                 !isEditMode -> repository.createEntry(
-                    Entry(title = _title.value, content = _content.value)
+                    Entry(title = _title.value, content = _content.value, imagePaths = _imagePaths.value)
                 )
             }
         }

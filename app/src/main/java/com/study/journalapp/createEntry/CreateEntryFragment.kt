@@ -1,25 +1,41 @@
 package com.study.journalapp.createEntry
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.study.journalapp.ImageAdapter
 import com.study.journalapp.data.EntryDatabase
 import com.study.journalapp.data.EntryRepository
 import com.study.journalapp.databinding.FragmentCreateEntryBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 
 class CreateEntryFragment : Fragment() {
+    private lateinit var viewModel: CreateEntryViewModel
     private var _binding: FragmentCreateEntryBinding? = null
     private val binding get() = _binding!!
+
+    private val pickImages = registerForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(maxItems = 5)
+    ) { uris ->
+        if (uris.isNotEmpty()) copyAllToInternalStorage(uris)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,10 +50,28 @@ class CreateEntryFragment : Fragment() {
         val dao = EntryDatabase.getInstance(application).entryDao
         val repository = EntryRepository(dao)
         val viewModelFactory = CreateEntryViewModelFactory(entryId, repository)
-        val viewModel = ViewModelProvider(this, viewModelFactory).get(CreateEntryViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CreateEntryViewModel::class.java)
 
         if (viewModel.isEditMode) {
             (requireActivity() as AppCompatActivity).supportActionBar?.title = "Edit entry"
+        }
+
+        binding.createTitle.doOnTextChanged { text, _, _, _ ->
+            viewModel.onTitleChanged(text.toString())
+        }
+        binding.createContent.doOnTextChanged { text, _, _, _ ->
+            viewModel.onContentChanged(text.toString())
+        }
+
+        val imageAdapter = ImageAdapter { path -> viewModel.removeImage(path) }
+        binding.imageList.adapter = imageAdapter
+        binding.imageList.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        binding.addPhotoButton.setOnClickListener {
+            pickImages.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -58,14 +92,13 @@ class CreateEntryFragment : Fragment() {
                         }
                     }
                 }
+                launch {
+                    viewModel.imagePaths.collect { paths ->
+                        imageAdapter.submitList(paths)
+                        binding.imageList.isVisible = paths.isNotEmpty()
+                    }
+                }
             }
-        }
-
-        binding.createTitle.doOnTextChanged { text, _, _, _ ->
-            viewModel.onTitleChanged(text.toString())
-        }
-        binding.createContent.doOnTextChanged { text, _, _, _ ->
-            viewModel.onContentChanged(text.toString())
         }
 
         binding.createButton.setOnClickListener {
@@ -74,6 +107,22 @@ class CreateEntryFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun copyAllToInternalStorage(uris: List<Uri>) {
+        val appContext = requireContext().applicationContext
+        viewLifecycleOwner.lifecycleScope.launch {
+            val paths = withContext(Dispatchers.IO) {
+                uris.mapIndexed { _, uri ->
+                    val file = File(appContext.filesDir, "entry_${System.currentTimeMillis()}.jpg")
+                    appContext.contentResolver.openInputStream(uri)?.use { input ->
+                        file.outputStream().use { output -> input.copyTo(output) }
+                    }
+                    file.absolutePath
+                }
+            }
+            viewModel.addImages(paths)
+        }
     }
 
     override fun onDestroyView() {

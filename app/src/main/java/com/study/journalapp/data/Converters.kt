@@ -14,4 +14,11 @@ class Converters {
     fun dateToTimestamp(date: Date?): Long? {
         return date?.time
     }
+
+    @TypeConverter
+    fun fromList(list: List<String>): String = list.joinToString("\n")
+
+    @TypeConverter
+    fun toList(value: String): List<String> =
+        if (value.isEmpty()) emptyList() else value.split("\n")
 }

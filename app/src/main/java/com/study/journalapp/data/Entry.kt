@@ -13,7 +13,7 @@ data class Entry(
     var title: String,
     var content: String,
     @ColumnInfo(name = "creation_date")
-    var creationDate: Date = Calendar.getInstance().apply {
-        add(Calendar.MONTH, -1)
-    }.time
+    var creationDate: Date = Calendar.getInstance().time,
+    @ColumnInfo(name = "image_paths")
+    var imagePaths: List<String> = emptyList()
 )

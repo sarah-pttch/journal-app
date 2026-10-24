@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.lifecycle.viewmodel)
     implementation(libs.recyclerview)
     implementation(libs.cardview)
+    implementation(libs.coil)
     ksp(libs.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

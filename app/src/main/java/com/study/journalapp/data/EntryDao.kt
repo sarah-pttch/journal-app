@@ -20,7 +20,7 @@ interface EntryDao {
     @Delete
     suspend fun delete(entry: Entry)
 
-    @Query("SELECT * FROM entries ORDER BY entryId DESC")
+    @Query("SELECT * FROM entries ORDER BY creation_date DESC")
     fun getAll(): Flow<List<Entry>>
 
     @Query("SELECT * FROM entries WHERE entryId = :entryId")

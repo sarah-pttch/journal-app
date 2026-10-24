@@ -9,11 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.study.journalapp.ImageAdapter
 import com.study.journalapp.R
 import com.study.journalapp.data.EntryDatabase
 import com.study.journalapp.data.EntryRepository
@@ -39,9 +42,16 @@ class ViewEntryFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        val imageAdapter = ImageAdapter()
+        binding.imageList.adapter = imageAdapter
+        binding.imageList.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
         viewModel.entry.observe(viewLifecycleOwner) { entry ->
             entry?.let {
                 (requireActivity() as AppCompatActivity).supportActionBar?.title = it.title
+                imageAdapter.submitList(it.imagePaths)
+                binding.imageList.isVisible = it.imagePaths.isNotEmpty()
             }
         }
 

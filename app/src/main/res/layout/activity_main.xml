@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:contentDescription="@string/create"
         android:src="@drawable/ic_plus" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

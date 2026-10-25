@@ -9,4 +9,8 @@
     <string name="title">Title</string>
     <string name="entry">Entry text ...</string>
     <string name="save">Save</string>
+    <string name="create">Create entry</string>
+    <string name="photo">Entry photo</string>
+    <string name="add_photos">Add photos</string>
+    <string name="remove_photo">Remove photo</string>
 </resources>

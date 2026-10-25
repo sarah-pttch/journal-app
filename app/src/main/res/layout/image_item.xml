@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:contentDescription="Entry photo" />
+        android:contentDescription="@string/photo" />
 
     <ImageButton
         android:id="@+id/removeButton"
@@ -20,5 +20,5 @@
         android:layout_margin="4dp"
         android:background="@drawable/bg_remove_button"
         android:src="@drawable/ic_close"
-        android:contentDescription="Remove photo" />
+        android:contentDescription="@string/remove_photo" />
 </FrameLayout>

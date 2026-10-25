@@ -41,7 +41,7 @@
             android:id="@+id/addPhotoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add photo" />
+            android:text="@string/add_photos" />
 
         <Button
             android:id="@+id/create_button"

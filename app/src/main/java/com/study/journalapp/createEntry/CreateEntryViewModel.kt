@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.study.journalapp.data.Entry
 import com.study.journalapp.data.EntryRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -20,6 +21,10 @@ class CreateEntryViewModel(entryId: Long, val repository: EntryRepository) : Vie
     val imagePaths = _imagePaths.asStateFlow()
 
     val isEditMode = entryId != 0L
+
+    private val _canSave = MutableStateFlow(!isEditMode)
+    val canSave = _canSave.asStateFlow()
+
     private var existingEntry: Entry? = null
 
     init {
@@ -30,6 +35,7 @@ class CreateEntryViewModel(entryId: Long, val repository: EntryRepository) : Vie
                     _title.value = entry.title
                     _content.value = entry.content
                     _imagePaths.value = entry.imagePaths
+                    _canSave.value = true
                 }
             }
         }
@@ -51,17 +57,38 @@ class CreateEntryViewModel(entryId: Long, val repository: EntryRepository) : Vie
         _imagePaths.value -= path
     }
 
-    fun saveEntry() {
-        viewModelScope.launch {
-            val existing = existingEntry
+    suspend fun saveEntry(): Boolean {
+        val existing = existingEntry
+        return try {
             when {
-                existing != null -> repository.update(
-                    existing.copy(title = _title.value, content = _content.value, imagePaths = _imagePaths.value)
-                )
-                !isEditMode -> repository.createEntry(
-                    Entry(title = _title.value, content = _content.value, imagePaths = _imagePaths.value)
-                )
+                existing != null -> {
+                    repository.update(
+                        existing.copy(
+                            title = _title.value,
+                            content = _content.value,
+                            imagePaths = _imagePaths.value
+                        )
+                    )
+                    true
+                }
+
+                !isEditMode -> {
+                    repository.create(
+                        Entry(
+                            title = _title.value,
+                            content = _content.value,
+                            imagePaths = _imagePaths.value
+                        )
+                    )
+                    true
+                }
+
+                else -> false
             }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            false
         }
     }
 }

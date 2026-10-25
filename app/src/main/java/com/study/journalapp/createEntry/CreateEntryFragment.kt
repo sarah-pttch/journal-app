@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.study.journalapp.ImageAdapter
+import com.study.journalapp.R
 import com.study.journalapp.data.EntryDatabase
 import com.study.journalapp.data.EntryRepository
 import com.study.journalapp.databinding.FragmentCreateEntryBinding
@@ -98,12 +101,21 @@ class CreateEntryFragment : Fragment() {
                         binding.imageList.isVisible = paths.isNotEmpty()
                     }
                 }
+                launch {
+                    viewModel.canSave.collect { binding.createButton.isEnabled = it }
+                }
             }
         }
 
         binding.createButton.setOnClickListener {
-            viewModel.saveEntry()
-            findNavController().popBackStack()
+            viewLifecycleOwner.lifecycleScope.launch {
+                if (viewModel.saveEntry()) {
+                    Toast.makeText(requireContext(), R.string.entry_saved, Toast.LENGTH_SHORT).show()
+                    findNavController().popBackStack()
+                } else {
+                    Snackbar.make(binding.root, R.string.entry_save_failed, Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
 
         return view

@@ -13,4 +13,6 @@
     <string name="photo">Entry photo</string>
     <string name="add_photos">Add photos</string>
     <string name="remove_photo">Remove photo</string>
+    <string name="entry_saved">Entry saved</string>
+    <string name="entry_save_failed">Could not save entry. Please try again.</string>
 </resources>

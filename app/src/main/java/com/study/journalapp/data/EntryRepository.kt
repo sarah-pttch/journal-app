@@ -8,7 +8,7 @@ import java.util.Calendar
 class EntryRepository(
     private val dao: EntryDao
 ) {
-    suspend fun createEntry(entry: Entry) {
+    suspend fun create(entry: Entry) {
         dao.insert(entry)
     }
 

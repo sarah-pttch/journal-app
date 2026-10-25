@@ -42,7 +42,14 @@ class ViewEntryFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val imageAdapter = ImageAdapter()
+        val imageAdapter = ImageAdapter(onClick = { index ->
+            val paths = viewModel.entry.value?.imagePaths ?: return@ImageAdapter
+            findNavController().navigate(
+                ViewEntryFragmentDirections.actionViewEntryFragmentToImageViewerFragment(
+                    paths.toTypedArray(), index
+                )
+            )
+        })
         binding.imageList.adapter = imageAdapter
         binding.imageList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

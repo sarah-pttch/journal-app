@@ -11,7 +11,8 @@ import com.study.journalapp.databinding.ImageItemBinding
 import java.io.File
 
 class ImageAdapter(
-    private val onRemove: ((String) -> Unit)? = null
+    private val onRemove: ((String) -> Unit)? = null,
+    private val onClick: ((Int) -> Unit)? = null
 ) : ListAdapter<String, ImageAdapter.ViewHolder>(object : DiffUtil.ItemCallback<String>() {
     override fun areItemsTheSame(a: String, b: String) = a == b
     override fun areContentsTheSame(a: String, b: String) = a == b
@@ -24,9 +25,10 @@ class ImageAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val path = getItem(position)
         holder.binding.image.load(File(path))
-        holder.binding.removeButton.isVisible = onRemove != null
-        if (onRemove != null) {
-            holder.binding.removeButton.setOnClickListener { onRemove(path) }
+        holder.binding.image.setOnClickListener {
+            onClick?.invoke(holder.bindingAdapterPosition)
         }
+        holder.binding.removeButton.isVisible = onRemove != null
+        holder.binding.removeButton.setOnClickListener { onRemove?.invoke(path) }
     }
 }

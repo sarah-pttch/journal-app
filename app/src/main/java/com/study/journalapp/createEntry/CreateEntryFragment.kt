@@ -63,7 +63,7 @@ class CreateEntryFragment : Fragment() {
             viewModel.onContentChanged(text.toString())
         }
 
-        val imageAdapter = ImageAdapter { path -> viewModel.removeImage(path) }
+        val imageAdapter = ImageAdapter(onRemove = { path -> viewModel.removeImage(path) })
         binding.imageList.adapter = imageAdapter
         binding.imageList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

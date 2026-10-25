@@ -64,6 +64,21 @@
         <action
             android:id="@+id/action_viewEntryFragment_to_createEntryFragment"
             app:destination="@id/createEntryFragment" />
+        <action
+            android:id="@+id/action_viewEntryFragment_to_imageViewerFragment"
+            app:destination="@id/imageViewerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageViewerFragment"
+        android:name="com.study.journalapp.viewEntry.ImageViewerFragment"
+        android:label="">
+        <argument
+            android:name="imagePaths"
+            app:argType="string[]" />
+        <argument
+            android:name="startIndex"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
     <action
         android:id="@+id/action_global_createEntryFragment"

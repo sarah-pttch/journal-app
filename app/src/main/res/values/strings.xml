@@ -15,4 +15,6 @@
     <string name="remove_photo">Remove photo</string>
     <string name="entry_saved">Entry saved</string>
     <string name="entry_save_failed">Could not save entry. Please try again.</string>
+    <string name="not_found_title">Entry not found</string>
+    <string name="not_found_message">The entry could not be found. It may have been removed.</string>
 </resources>

@@ -22,11 +22,20 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/entry_text"
+                android:id="@+id/entry_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="@={viewModel.entry.content}" />
+                android:text="@{viewModel.entry.content}" />
+
+            <TextView
+                android:id="@+id/notFoundMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:gravity="center"
+                android:text="@string/not_found_message"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/imageList"

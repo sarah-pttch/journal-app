@@ -55,16 +55,31 @@ class ViewEntryFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         viewModel.entry.observe(viewLifecycleOwner) { entry ->
-            entry?.let {
-                (requireActivity() as AppCompatActivity).supportActionBar?.title = it.title
-                imageAdapter.submitList(it.imagePaths)
-                binding.imageList.isVisible = it.imagePaths.isNotEmpty()
+            val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+
+            if (entry == null) {
+                actionBar?.title = getString(R.string.not_found_title)
+                binding.notFoundMessage.isVisible = true
+                imageAdapter.submitList(emptyList())
+                binding.imageList.isVisible = false
+            } else {
+                actionBar?.title = entry.title
+                binding.notFoundMessage.isVisible = false
+                imageAdapter.submitList(entry.imagePaths)
+                binding.imageList.isVisible = entry.imagePaths.isNotEmpty()
             }
+            requireActivity().invalidateMenu()
         }
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_view_entry, menu)
+            }
+
+            override fun onPrepareMenu(menu: Menu) {
+                val hasEntry = viewModel.entry.value != null
+                menu.findItem(R.id.action_edit)?.isVisible = hasEntry
+                menu.findItem(R.id.action_delete)?.isVisible = hasEntry
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =

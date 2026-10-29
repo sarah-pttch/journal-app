@@ -3,11 +3,13 @@ package com.study.journalapp.calendar
 import androidx.lifecycle.ViewModel
 import com.applandeo.materialcalendarview.CalendarDay
 import com.study.journalapp.data.EntryRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import java.util.Calendar
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CalendarViewModel(val repository: EntryRepository) : ViewModel() {
 
     val calendar = Calendar.getInstance()

@@ -28,4 +28,7 @@ interface EntryDao {
 
     @Query("SELECT * FROM entries WHERE creation_date BETWEEN :start AND :end")
     fun getByDate(start: Date, end: Date): Flow<List<Entry>>
+
+    @Query("SELECT * FROM entries ORDER BY creation_date DESC, entryId DESC LIMIT 1")
+    fun getLast(): Flow<Entry?>
 }

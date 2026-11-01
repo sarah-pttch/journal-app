@@ -54,4 +54,6 @@ class EntryRepository(
 
         return dao.getByDate(start.time, end.time)
     }
+
+    fun getLast(): Flow<Entry?> = dao.getLast()
 }

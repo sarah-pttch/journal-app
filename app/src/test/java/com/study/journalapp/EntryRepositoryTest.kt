@@ -132,4 +132,17 @@ class EntryRepositoryTest {
         assertEquals(dateOf(2026, 6, 26), start.captured)
         assertEquals(dateOf(2026, 6, 27), end.captured)
     }
+
+    @Test
+    fun getLast_returnsLastEntryFromDao() = runTest {
+        val entry = entryOn(1L, 2026, 6, 26)
+        every { dao.getLast() } returns flowOf(entry)
+        assertEquals(entry, repository.getLast().first())
+    }
+
+    @Test
+    fun getLast_noEntries_returnsNull() = runTest {
+        every { dao.getLast() } returns flowOf(null)
+        assertNull(repository.getLast().first())
+    }
 }

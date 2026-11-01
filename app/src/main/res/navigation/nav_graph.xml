@@ -7,12 +7,15 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.study.journalapp.HomeFragment"
+        android:name="com.study.journalapp.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_createEntryFragment"
             app:destination="@id/createEntryFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_viewEntryFragment"
+            app:destination="@+id/viewEntryFragment" />
     </fragment>
     <fragment
         android:id="@+id/listFragment"

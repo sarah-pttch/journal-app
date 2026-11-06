@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.study.journalapp.home.HomeFragment"
-        android:label="Home"
+        android:label="@string/home"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_createEntryFragment"
@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="com.study.journalapp.list.ListFragment"
-        android:label="Entries"
+        android:label="@string/entries"
         tools:layout="@layout/fragment_list" >
         <action
             android:id="@+id/action_listFragment_to_createEntryFragment"
@@ -32,7 +32,7 @@
     <fragment
         android:id="@+id/calendarFragment"
         android:name="com.study.journalapp.calendar.CalendarFragment"
-        android:label="Calendar"
+        android:label="@string/calendar"
         tools:layout="@layout/fragment_calendar" >
         <action
             android:id="@+id/action_calendarFragment_to_createEntryFragment"
@@ -44,12 +44,12 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.study.journalapp.SettingsFragment"
-        android:label="Settings"
+        android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/createEntryFragment"
         android:name="com.study.journalapp.createEntry.CreateEntryFragment"
-        android:label="Create a new entry"
+        android:label="@string/create_entry"
         tools:layout="@layout/fragment_create_entry" >
         <argument
             android:name="entryId"
@@ -59,7 +59,7 @@
     <fragment
         android:id="@+id/viewEntryFragment"
         android:name="com.study.journalapp.viewEntry.ViewEntryFragment"
-        android:label="Entry title"
+        android:label="@string/title"
         tools:layout="@layout/fragment_view_entry" >
         <argument
             android:name="entryId"

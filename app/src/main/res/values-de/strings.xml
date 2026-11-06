@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Journal App</string>
+    <string name="home">Home</string>
+    <string name="entries">Einträge</string>
+    <string name="calendar">Kalender</string>
+    <string name="settings">Einstellungen</string>
+    <string name="create_entry">Erstelle einen neuen Eintrag</string>
+    <string name="title">Titel</string>
+    <string name="entry">Schreibe hier etwas ...</string>
+    <string name="save">Speichern</string>
+    <string name="create">Eintrag erstellen</string>
+    <string name="photo">Eintragsfoto</string>
+    <string name="add_photos">Fotos hinzufügen</string>
+    <string name="remove_photo">Foto entfernen</string>
+    <string name="entry_saved">Eintrag gespeichert</string>
+    <string name="entry_save_failed">Der Eintrag konnte nicht gespeichert werden. Bitte versuche es erneut.</string>
+    <string name="not_found_title">Eintrag nicht gefunden</string>
+    <string name="not_found_message">Der Eintrag konnte nicht gefunden werden. Möglicherweise wurde er entfernt.</string>
+    <string name="welcome">Willkommen zurück!</string>
+    <string name="today_entry_done">Super, du hast heute schon einen Eintrag erstellt. Möchtest du noch etwas hinzufügen? Tippe auf den Eintrag unten, um ihn zu bearbeiten oder erstelle noch einen Eintrag.</string>
+    <string name="today_entry_pending">Du hast heute noch keinen Eintrag erstellt. Möchtest du deine Gedanken teilen?</string>
+    <string name="last_entry">Letzter Eintrag</string>
+    <string name="language">Sprache</string>
+</resources>

@@ -5,13 +5,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.study.journalapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,15 +32,15 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
         val builder = AppBarConfiguration.Builder(setOf(
             R.id.homeFragment,
             R.id.listFragment,
             R.id.calendarFragment,
             R.id.settingsFragment
         ))
-        val appBarConfiguration = builder.build()
-        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+        appBarConfiguration = builder.build()
+        setupActionBarWithNavController(navController, appBarConfiguration)
         binding.bottomNav.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -63,9 +68,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.viewEntryFragment -> binding.fab.hide()
             }
         }
+    }
 
-        binding.fab.setOnClickListener {
-            navController.navigate(R.id.action_global_createEntryFragment)
-        }
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }
